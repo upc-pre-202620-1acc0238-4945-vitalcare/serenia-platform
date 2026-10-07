@@ -4,7 +4,7 @@ import com.serenia.platform.iam.domain.model.queries.GetUserByIdQuery;
 import com.serenia.platform.iam.domain.model.valueobjects.UserRole;
 import com.serenia.platform.iam.domain.services.UserCommandService;
 import com.serenia.platform.iam.domain.services.UserQueryService;
-import com.serenia.platform.iam.infrastructure.authorization.sfs.model.AuthenticatedUserPrincipal;
+import com.serenia.platform.shared.infrastructure.security.AuthenticatedUserPrincipal;
 import com.serenia.platform.iam.interfaces.rest.resources.ChangePasswordResource;
 import com.serenia.platform.iam.interfaces.rest.resources.RegisterUserResource;
 import com.serenia.platform.iam.interfaces.rest.resources.UpdateProfileDataResource;

@@ -3,7 +3,7 @@ package com.serenia.platform.iam.infrastructure.authorization.sfs.pipeline;
 import com.serenia.platform.iam.domain.model.queries.GetActiveSessionByIdQuery;
 import com.serenia.platform.iam.domain.model.valueobjects.TokenHash;
 import com.serenia.platform.iam.domain.services.SessionQueryService;
-import com.serenia.platform.iam.infrastructure.authorization.sfs.model.AuthenticatedUserPrincipal;
+import com.serenia.platform.shared.infrastructure.security.AuthenticatedUserPrincipal;
 import com.serenia.platform.iam.infrastructure.authorization.sfs.model.UsernamePasswordAuthenticationTokenBuilder;
 import com.serenia.platform.iam.infrastructure.tokens.jwt.BearerTokenService;
 import jakarta.servlet.FilterChain;

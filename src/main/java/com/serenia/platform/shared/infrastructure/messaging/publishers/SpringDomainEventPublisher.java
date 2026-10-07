@@ -1,6 +1,6 @@
-package com.serenia.platform.iam.infrastructure.messaging.publishers;
+package com.serenia.platform.shared.infrastructure.messaging.publishers;
 
-import com.serenia.platform.iam.application.internal.outboundservices.events.DomainEventPublisher;
+import com.serenia.platform.shared.application.outboundservices.events.DomainEventPublisher;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 

@@ -1,4 +1,4 @@
-package com.serenia.platform.iam.application.internal.outboundservices.events;
+package com.serenia.platform.shared.application.outboundservices.events;
 
 import java.util.Collection;
 

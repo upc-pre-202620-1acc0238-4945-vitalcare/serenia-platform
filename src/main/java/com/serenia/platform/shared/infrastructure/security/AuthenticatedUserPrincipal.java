@@ -1,4 +1,4 @@
-package com.serenia.platform.iam.infrastructure.authorization.sfs.model;
+package com.serenia.platform.shared.infrastructure.security;
 
 import java.util.UUID;
 
