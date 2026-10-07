@@ -63,6 +63,8 @@ public final class ErrorResponseAssembler {
             case "BUSINESS_RULE_VIOLATION" -> "error.business-rule.message";
             case "UNAUTHORIZED" -> "error.unauthorized.message";
             case "FORBIDDEN" -> "error.forbidden.message";
+            case "UNSUPPORTED_MEDIA_TYPE" -> "error.unsupported-media-type.message";
+            case "PAYLOAD_TOO_LARGE" -> "error.payload-too-large.message";
             case "UNEXPECTED_ERROR" -> "error.unexpected.message";
             case String s when s.endsWith("_NOT_FOUND") -> "error.not-found.message";
             case String s when s.endsWith("_CONFLICT") -> "error.conflict.message";
@@ -121,6 +123,8 @@ public final class ErrorResponseAssembler {
             case "BUSINESS_RULE_VIOLATION" -> HttpStatusCode.valueOf(422);
             case "UNAUTHORIZED" -> HttpStatus.UNAUTHORIZED;
             case "FORBIDDEN" -> HttpStatus.FORBIDDEN;
+            case "UNSUPPORTED_MEDIA_TYPE" -> HttpStatus.UNSUPPORTED_MEDIA_TYPE;
+            case "PAYLOAD_TOO_LARGE" -> HttpStatus.CONTENT_TOO_LARGE;
             case String s when s.endsWith("_CONFLICT") -> HttpStatus.CONFLICT;
             case "UNEXPECTED_ERROR" -> HttpStatus.INTERNAL_SERVER_ERROR;
             default -> HttpStatus.INTERNAL_SERVER_ERROR;
