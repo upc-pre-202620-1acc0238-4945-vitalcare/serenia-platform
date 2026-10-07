@@ -21,7 +21,9 @@ import com.serenia.platform.iam.domain.services.UserCommandService;
 import com.serenia.platform.shared.application.result.ApplicationError;
 import com.serenia.platform.shared.application.result.Result;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.time.DateTimeException;
 import java.time.ZoneId;
@@ -48,13 +50,16 @@ public class UserCommandServiceImpl implements UserCommandService {
     private final UserRepository userRepository;
     private final HashingService hashingService;
     private final DomainEventPublisher domainEventPublisher;
+    private final TransactionTemplate transactionTemplate;
 
     public UserCommandServiceImpl(UserRepository userRepository,
                                   HashingService hashingService,
-                                  DomainEventPublisher domainEventPublisher) {
+                                  DomainEventPublisher domainEventPublisher,
+                                  PlatformTransactionManager transactionManager) {
         this.userRepository = userRepository;
         this.hashingService = hashingService;
         this.domainEventPublisher = domainEventPublisher;
+        this.transactionTemplate = new TransactionTemplate(transactionManager);
     }
 
     @Override
@@ -129,8 +134,12 @@ public class UserCommandServiceImpl implements UserCommandService {
         var email = new EmailAddress(rawEmail);
         if (userRepository.existsByEmail(email))
             return Result.failure(ApplicationError.conflict("user", EMAIL_ALREADY_REGISTERED));
+        var user = factory.apply(email);
         try {
-            return Result.success(saveAndPublish(factory.apply(email)));
+            // The account and the data other contexts create from its registration event
+            // (e.g. the care circle) commit together; the transaction is opened here, and not
+            // with @Transactional, so a duplicate email is caught after it has rolled back
+            return Result.success(transactionTemplate.execute(_ -> saveAndPublish(user)));
         } catch (EmailAlreadyRegisteredException e) {
             // Another registration with the same email won the race on the unique index
             return Result.failure(ApplicationError.conflict("user", EMAIL_ALREADY_REGISTERED));
