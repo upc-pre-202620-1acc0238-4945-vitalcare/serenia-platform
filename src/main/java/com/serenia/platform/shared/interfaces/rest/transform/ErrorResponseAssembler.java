@@ -61,6 +61,8 @@ public final class ErrorResponseAssembler {
         return switch (errorCode) {
             case "VALIDATION_ERROR" -> "error.validation.message";
             case "BUSINESS_RULE_VIOLATION" -> "error.business-rule.message";
+            case "UNAUTHORIZED" -> "error.unauthorized.message";
+            case "FORBIDDEN" -> "error.forbidden.message";
             case "UNEXPECTED_ERROR" -> "error.unexpected.message";
             case String s when s.endsWith("_NOT_FOUND") -> "error.not-found.message";
             case String s when s.endsWith("_CONFLICT") -> "error.conflict.message";
@@ -117,6 +119,8 @@ public final class ErrorResponseAssembler {
             case "VALIDATION_ERROR" -> HttpStatus.BAD_REQUEST;
             case String s when s.endsWith("_NOT_FOUND") -> HttpStatus.NOT_FOUND;
             case "BUSINESS_RULE_VIOLATION" -> HttpStatusCode.valueOf(422);
+            case "UNAUTHORIZED" -> HttpStatus.UNAUTHORIZED;
+            case "FORBIDDEN" -> HttpStatus.FORBIDDEN;
             case String s when s.endsWith("_CONFLICT") -> HttpStatus.CONFLICT;
             case "UNEXPECTED_ERROR" -> HttpStatus.INTERNAL_SERVER_ERROR;
             default -> HttpStatus.INTERNAL_SERVER_ERROR;

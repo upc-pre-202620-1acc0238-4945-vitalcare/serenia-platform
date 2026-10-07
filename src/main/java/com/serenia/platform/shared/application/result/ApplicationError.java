@@ -64,6 +64,26 @@ public record ApplicationError(
     }
 
     /**
+     * Unauthorized error: the caller could not be authenticated
+     */
+    public static ApplicationError unauthorized(String reason) {
+        return new ApplicationError(
+                "UNAUTHORIZED",
+                "Authentication failed",
+                reason);
+    }
+
+    /**
+     * Forbidden error: the caller is authenticated but not allowed to perform the operation
+     */
+    public static ApplicationError forbidden(String reason) {
+        return new ApplicationError(
+                "FORBIDDEN",
+                "Operation not allowed",
+                reason);
+    }
+
+    /**
      * Unexpected error: something went wrong that shouldn't have
      */
     public static ApplicationError unexpected(String context, String reason) {
