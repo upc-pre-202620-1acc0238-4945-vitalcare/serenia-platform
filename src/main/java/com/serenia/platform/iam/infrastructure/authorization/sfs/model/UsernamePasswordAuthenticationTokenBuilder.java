@@ -1,5 +1,6 @@
 package com.serenia.platform.iam.infrastructure.authorization.sfs.model;
 
+import com.serenia.platform.shared.infrastructure.security.AuthenticatedUserPrincipal;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

@@ -2,7 +2,7 @@ package com.serenia.platform.iam.interfaces.rest;
 
 import com.serenia.platform.iam.domain.model.commands.SignOutCommand;
 import com.serenia.platform.iam.domain.services.SessionCommandService;
-import com.serenia.platform.iam.infrastructure.authorization.sfs.model.AuthenticatedUserPrincipal;
+import com.serenia.platform.shared.infrastructure.security.AuthenticatedUserPrincipal;
 import com.serenia.platform.iam.interfaces.rest.resources.AuthenticatedUserResource;
 import com.serenia.platform.iam.interfaces.rest.resources.SignInResource;
 import com.serenia.platform.iam.interfaces.rest.transform.AuthenticatedUserResourceFromEntityAssembler;

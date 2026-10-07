@@ -1,6 +1,6 @@
 package com.serenia.platform.iam.application.internal.commandservices;
 
-import com.serenia.platform.iam.application.internal.outboundservices.events.DomainEventPublisher;
+import com.serenia.platform.shared.application.outboundservices.events.DomainEventPublisher;
 import com.serenia.platform.iam.application.internal.outboundservices.hashing.HashingService;
 import com.serenia.platform.iam.application.internal.outboundservices.tokens.TokenService;
 import com.serenia.platform.iam.domain.model.aggregates.Session;
