@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import org.springframework.web.multipart.support.MissingServletRequestPartException;
 
 import java.text.MessageFormat;
 import java.util.MissingResourceException;
@@ -62,6 +64,32 @@ public class GlobalExceptionHandler {
                 resolveMessageOrDefault("validation.request.argument", "request-argument"),
                 ex.getMessage() != null ? ex.getMessage() : resolveMessageOrDefault("validation.request.failed", "Request validation failed")
         );
+        return ErrorResponseAssembler.toErrorResponseFromApplicationError(applicationError);
+    }
+
+    /**
+     * Handles uploads larger than the multipart limit, rejected before reaching a controller.
+     *
+     * @param ex the size exception raised by the multipart resolver
+     * @return error response with CONTENT_TOO_LARGE status
+     */
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<?> handleMaxUploadSizeExceeded(MaxUploadSizeExceededException ex) {
+        var applicationError = ApplicationError.payloadTooLarge(
+                resolveMessageOrDefault("validation.file.too.large", "The file exceeds the maximum allowed size"));
+        return ErrorResponseAssembler.toErrorResponseFromApplicationError(applicationError);
+    }
+
+    /**
+     * Handles multipart requests that miss a required part, such as the uploaded file.
+     *
+     * @param ex the missing part exception
+     * @return error response with BAD_REQUEST status
+     */
+    @ExceptionHandler(MissingServletRequestPartException.class)
+    public ResponseEntity<?> handleMissingServletRequestPart(MissingServletRequestPartException ex) {
+        var applicationError = ApplicationError.validationError(ex.getRequestPartName(),
+                resolveMessageOrDefault("validation.request.part.missing", "Required request part is missing"));
         return ErrorResponseAssembler.toErrorResponseFromApplicationError(applicationError);
     }
 

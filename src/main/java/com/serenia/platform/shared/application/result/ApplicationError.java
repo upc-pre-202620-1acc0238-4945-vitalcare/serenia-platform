@@ -84,6 +84,26 @@ public record ApplicationError(
     }
 
     /**
+     * Unsupported media type error: the received file is not of an accepted format
+     */
+    public static ApplicationError unsupportedMediaType(String reason) {
+        return new ApplicationError(
+                "UNSUPPORTED_MEDIA_TYPE",
+                "Unsupported media type",
+                reason);
+    }
+
+    /**
+     * Payload too large error: the received file exceeds the maximum allowed size
+     */
+    public static ApplicationError payloadTooLarge(String reason) {
+        return new ApplicationError(
+                "PAYLOAD_TOO_LARGE",
+                "Payload too large",
+                reason);
+    }
+
+    /**
      * Unexpected error: something went wrong that shouldn't have
      */
     public static ApplicationError unexpected(String context, String reason) {
