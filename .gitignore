@@ -37,3 +37,7 @@ media-storage/
 
 ### Local tool settings ###
 .claude/
+
+## Archivos env
+.env
+*.env
