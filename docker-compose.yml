@@ -1,0 +1,22 @@
+# Values are never stored here: they come from environment variables
+# (for example from an env file kept outside the repository, passed with --env-file).
+services:
+  serenia-platform:
+    image: serenia-platform:${IMAGE_TAG:-1.0.0}
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE:-prod}
+      - PORT=8080
+      - DATABASE_URL=${DATABASE_URL:?DATABASE_URL is required}
+      - DATABASE_PORT=${DATABASE_PORT:-3306}
+      - DATABASE_NAME=${DATABASE_NAME:?DATABASE_NAME is required}
+      - DATABASE_USER=${DATABASE_USER:?DATABASE_USER is required}
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD:?DATABASE_PASSWORD is required}
+      - JWT_SECRET=${JWT_SECRET:?JWT_SECRET is required}
+      - MEDIA_STORAGE_PROVIDER=${MEDIA_STORAGE_PROVIDER:-azure}
+      - AZURE_STORAGE_CONNECTION_STRING=${AZURE_STORAGE_CONNECTION_STRING:-}
+      - AZURE_STORAGE_CONTAINER=${AZURE_STORAGE_CONTAINER:-serenia-media}
