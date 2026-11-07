@@ -8,6 +8,7 @@ import com.serenia.platform.iam.domain.model.valueobjects.PersonName;
 import com.serenia.platform.iam.domain.model.valueobjects.PhoneNumber;
 import com.serenia.platform.iam.domain.model.valueobjects.UserId;
 import com.serenia.platform.iam.infrastructure.persistence.jpa.entities.UserPersistenceEntity;
+import com.serenia.platform.shared.domain.model.valueobjects.MediaKey;
 
 import java.time.ZoneId;
 
@@ -31,6 +32,7 @@ public final class UserPersistenceMapper {
                 PhoneNumber.fromNullable(entity.getPhoneNumber()),
                 entity.getBirthDate(),
                 entity.getPhotoUrl(),
+                entity.getPhotoKey() == null ? null : new MediaKey(entity.getPhotoKey()),
                 new LocaleCode(entity.getLocale()),
                 ZoneId.of(entity.getTimeZone()),
                 entity.getStatus(),
@@ -49,6 +51,7 @@ public final class UserPersistenceMapper {
         entity.setPhoneNumber(user.getPhoneNumber() == null ? null : user.getPhoneNumber().value());
         entity.setBirthDate(user.getBirthDate());
         entity.setPhotoUrl(user.getPhotoUrl());
+        entity.setPhotoKey(user.getPhotoKey() == null ? null : user.getPhotoKey().value());
         entity.setLocale(user.getLocale().value());
         entity.setTimeZone(user.getTimeZone().getId());
         entity.setStatus(user.getStatus());

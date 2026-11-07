@@ -60,6 +60,9 @@ public class UserPersistenceEntity {
     @Column(name = "photo_url", columnDefinition = "TEXT")
     private String photoUrl;
 
+    @Column(name = "photo_key", length = 500)
+    private String photoKey;
+
     @Column(name = "locale", length = 10, nullable = false)
     private String locale;
 

@@ -6,6 +6,7 @@ import com.serenia.platform.iam.domain.model.commands.RegisterDistantRelativeCom
 import com.serenia.platform.iam.domain.model.commands.RegisterOlderAdultCommand;
 import com.serenia.platform.iam.domain.model.commands.UpdateProfileDataCommand;
 import com.serenia.platform.iam.domain.model.commands.UpdateUserPhotoCommand;
+import com.serenia.platform.iam.domain.model.commands.UploadUserPhotoCommand;
 import com.serenia.platform.shared.application.result.ApplicationError;
 import com.serenia.platform.shared.application.result.Result;
 
@@ -25,6 +26,9 @@ public interface UserCommandService {
 
     /** Replaces the profile photo of an account. */
     Result<User, ApplicationError> handle(UpdateUserPhotoCommand command);
+
+    /** Replaces the profile photo of an account with an uploaded image. */
+    Result<User, ApplicationError> handle(UploadUserPhotoCommand command);
 
     /** Replaces the personal data of an account. */
     Result<User, ApplicationError> handle(UpdateProfileDataCommand command);

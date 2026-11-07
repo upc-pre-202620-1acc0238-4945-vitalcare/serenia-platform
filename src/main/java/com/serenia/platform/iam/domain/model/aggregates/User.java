@@ -16,6 +16,7 @@ import com.serenia.platform.iam.domain.model.valueobjects.SessionId;
 import com.serenia.platform.iam.domain.model.valueobjects.UserId;
 import com.serenia.platform.iam.domain.model.valueobjects.UserRole;
 import com.serenia.platform.shared.domain.model.aggregates.AbstractDomainAggregateRoot;
+import com.serenia.platform.shared.domain.model.valueobjects.MediaKey;
 import lombok.Getter;
 
 import java.time.Instant;
@@ -43,6 +44,7 @@ public class User extends AbstractDomainAggregateRoot<User> {
     private static final String STATUS_NULL_MESSAGE_KEY = "user.status.null";
     private static final String BIRTH_DATE_FUTURE_MESSAGE_KEY = "user.birth.date.future";
     private static final String TIMESTAMPS_NULL_MESSAGE_KEY = "user.timestamps.null";
+    private static final String PHOTO_KEY_NULL_MESSAGE_KEY = "media.key.blank";
 
     private final UserId id;
     private final EmailAddress email;
@@ -52,6 +54,7 @@ public class User extends AbstractDomainAggregateRoot<User> {
     private PhoneNumber phoneNumber;
     private LocalDate birthDate;
     private String photoUrl;
+    private MediaKey photoKey;
     private LocaleCode locale;
     private ZoneId timeZone;
     private AccountStatus status;
@@ -64,7 +67,7 @@ public class User extends AbstractDomainAggregateRoot<User> {
      */
     public User(UserId id, EmailAddress email, PasswordHash passwordHash, UserRole role,
                 PersonName fullName, PhoneNumber phoneNumber, LocalDate birthDate, String photoUrl,
-                LocaleCode locale, ZoneId timeZone, AccountStatus status,
+                MediaKey photoKey, LocaleCode locale, ZoneId timeZone, AccountStatus status,
                 Instant createdAt, Instant updatedAt) {
         this.id = requireNonNull(id, ID_NULL_MESSAGE_KEY);
         this.email = requireNonNull(email, EMAIL_NULL_MESSAGE_KEY);
@@ -76,6 +79,7 @@ public class User extends AbstractDomainAggregateRoot<User> {
         this.timeZone = requireNonNull(timeZone, TIME_ZONE_NULL_MESSAGE_KEY);
         this.birthDate = validateBirthDate(birthDate, this.timeZone);
         this.photoUrl = photoUrl;
+        this.photoKey = photoKey;
         this.status = requireNonNull(status, STATUS_NULL_MESSAGE_KEY);
         this.createdAt = requireNonNull(createdAt, TIMESTAMPS_NULL_MESSAGE_KEY);
         this.updatedAt = requireNonNull(updatedAt, TIMESTAMPS_NULL_MESSAGE_KEY);
@@ -119,12 +123,33 @@ public class User extends AbstractDomainAggregateRoot<User> {
         registerDomainEvent(new ProfileDataUpdated(id.value(), updatedAt));
     }
 
-    /** Replaces the profile photo and registers {@link UserPhotoUpdated}. */
+    /**
+     * Replaces the profile photo with an external URL, dropping any uploaded photo, and
+     * registers {@link UserPhotoUpdated}.
+     */
     public void updatePhoto(String photoUrl) {
         ensureActive();
         this.photoUrl = photoUrl;
+        this.photoKey = null;
         this.updatedAt = Instant.now();
         registerDomainEvent(new UserPhotoUpdated(id.value(), updatedAt));
+    }
+
+    /**
+     * Replaces the profile photo with an uploaded image kept in the media storage, and
+     * registers {@link UserPhotoUpdated}.
+     */
+    public void uploadPhoto(MediaKey photoKey) {
+        ensureActive();
+        this.photoKey = requireNonNull(photoKey, PHOTO_KEY_NULL_MESSAGE_KEY);
+        this.photoUrl = null;
+        this.updatedAt = Instant.now();
+        registerDomainEvent(new UserPhotoUpdated(id.value(), updatedAt));
+    }
+
+    /** Indicates whether the profile photo is an image uploaded to the media storage. */
+    public boolean hasUploadedPhoto() {
+        return photoKey != null;
     }
 
     /**
@@ -156,7 +181,7 @@ public class User extends AbstractDomainAggregateRoot<User> {
                                  PhoneNumber phoneNumber, LocalDate birthDate, LocaleCode locale, ZoneId timeZone) {
         var now = Instant.now();
         return new User(UserId.generate(), email, passwordHash, role, fullName, phoneNumber, birthDate,
-                null, locale, timeZone, AccountStatus.ACTIVE, now, now);
+                null, null, locale, timeZone, AccountStatus.ACTIVE, now, now);
     }
 
     /** Prevents changes on a suspended or deleted account. */
