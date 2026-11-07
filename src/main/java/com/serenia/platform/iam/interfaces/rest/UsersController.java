@@ -1,23 +1,27 @@
 package com.serenia.platform.iam.interfaces.rest;
 
 import com.serenia.platform.iam.domain.model.queries.GetUserByIdQuery;
+import com.serenia.platform.iam.domain.model.queries.GetUserPhotoQuery;
 import com.serenia.platform.iam.domain.model.valueobjects.UserRole;
 import com.serenia.platform.iam.domain.services.UserCommandService;
 import com.serenia.platform.iam.domain.services.UserQueryService;
-import com.serenia.platform.shared.infrastructure.security.AuthenticatedUserPrincipal;
 import com.serenia.platform.iam.interfaces.rest.resources.ChangePasswordResource;
 import com.serenia.platform.iam.interfaces.rest.resources.RegisterUserResource;
 import com.serenia.platform.iam.interfaces.rest.resources.UpdateProfileDataResource;
 import com.serenia.platform.iam.interfaces.rest.resources.UpdateUserPhotoResource;
+import com.serenia.platform.iam.interfaces.rest.resources.UploadUserPhotoResource;
 import com.serenia.platform.iam.interfaces.rest.resources.UserResource;
 import com.serenia.platform.iam.interfaces.rest.transform.ChangePasswordCommandFromResourceAssembler;
 import com.serenia.platform.iam.interfaces.rest.transform.RegisterDistantRelativeCommandFromResourceAssembler;
 import com.serenia.platform.iam.interfaces.rest.transform.RegisterOlderAdultCommandFromResourceAssembler;
 import com.serenia.platform.iam.interfaces.rest.transform.UpdateProfileDataCommandFromResourceAssembler;
 import com.serenia.platform.iam.interfaces.rest.transform.UpdateUserPhotoCommandFromResourceAssembler;
+import com.serenia.platform.iam.interfaces.rest.transform.UploadUserPhotoCommandFromResourceAssembler;
 import com.serenia.platform.iam.interfaces.rest.transform.UserResourceFromEntityAssembler;
 import com.serenia.platform.shared.application.result.ApplicationError;
+import com.serenia.platform.shared.infrastructure.security.AuthenticatedUserPrincipal;
 import com.serenia.platform.shared.interfaces.rest.transform.ErrorResponseAssembler;
+import com.serenia.platform.shared.interfaces.rest.transform.MediaResponseAssembler;
 import com.serenia.platform.shared.interfaces.rest.transform.ResponseEntityAssembler;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -32,6 +36,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -116,8 +121,8 @@ public class UsersController {
                 HttpStatus.OK);
     }
 
-    @PutMapping("/{userId}/photo")
-    @Operation(summary = "Update user photo", description = "Replaces the profile photo of the authenticated user.")
+    @PutMapping(value = "/{userId}/photo", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Update user photo", description = "Replaces the profile photo of the authenticated user with an external URL.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Photo updated successfully.",
                     content = @Content(schema = @Schema(implementation = UserResource.class))),
@@ -134,6 +139,39 @@ public class UsersController {
                 userCommandService.handle(command),
                 UserResourceFromEntityAssembler::toResourceFromEntity,
                 HttpStatus.OK);
+    }
+
+    @PutMapping(value = "/{userId}/photo", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "Upload user photo",
+            description = "Replaces the profile photo of the authenticated user with an uploaded JPEG or PNG image.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Photo uploaded successfully.",
+                    content = @Content(schema = @Schema(implementation = UserResource.class))),
+            @ApiResponse(responseCode = "400", description = "Missing file."),
+            @ApiResponse(responseCode = "403", description = "The user is not the account owner."),
+            @ApiResponse(responseCode = "404", description = "User not found."),
+            @ApiResponse(responseCode = "413", description = "The image exceeds the maximum size."),
+            @ApiResponse(responseCode = "415", description = "The file is not a JPEG or PNG image.")})
+    public ResponseEntity<?> uploadUserPhoto(
+            @PathVariable UUID userId,
+            @Valid @ModelAttribute UploadUserPhotoResource resource,
+            @Parameter(hidden = true) @AuthenticationPrincipal AuthenticatedUserPrincipal principal) {
+        if (!isAccountOwner(principal, userId)) return notAccountOwner();
+        var command = UploadUserPhotoCommandFromResourceAssembler.toCommandFromResource(userId, resource);
+        return ResponseEntityAssembler.toResponseEntityFromResult(
+                userCommandService.handle(command),
+                UserResourceFromEntityAssembler::toResourceFromEntity,
+                HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/{userId}/photo", produces = MediaType.ALL_VALUE)
+    @Operation(summary = "Get user photo", description = "Serves the uploaded profile photo of an account.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Image file."),
+            @ApiResponse(responseCode = "401", description = "Missing or invalid session."),
+            @ApiResponse(responseCode = "404", description = "User not found, or the user has no uploaded photo.")})
+    public ResponseEntity<?> getUserPhoto(@PathVariable UUID userId) {
+        return MediaResponseAssembler.toResponseEntityFromResult(userQueryService.handle(new GetUserPhotoQuery(userId)));
     }
 
     @PutMapping("/{userId}/password")
