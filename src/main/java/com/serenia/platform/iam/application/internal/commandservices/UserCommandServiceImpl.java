@@ -1,6 +1,5 @@
 package com.serenia.platform.iam.application.internal.commandservices;
 
-import com.serenia.platform.shared.application.outboundservices.events.DomainEventPublisher;
 import com.serenia.platform.iam.application.internal.outboundservices.hashing.HashingService;
 import com.serenia.platform.iam.domain.exceptions.EmailAlreadyRegisteredException;
 import com.serenia.platform.iam.domain.model.aggregates.User;
@@ -8,7 +7,7 @@ import com.serenia.platform.iam.domain.model.commands.ChangePasswordCommand;
 import com.serenia.platform.iam.domain.model.commands.RegisterDistantRelativeCommand;
 import com.serenia.platform.iam.domain.model.commands.RegisterOlderAdultCommand;
 import com.serenia.platform.iam.domain.model.commands.UpdateProfileDataCommand;
-import com.serenia.platform.iam.domain.model.commands.UpdateUserPhotoCommand;
+import com.serenia.platform.iam.domain.model.commands.UploadUserPhotoCommand;
 import com.serenia.platform.iam.domain.model.valueobjects.EmailAddress;
 import com.serenia.platform.iam.domain.model.valueobjects.LocaleCode;
 import com.serenia.platform.iam.domain.model.valueobjects.PasswordHash;
@@ -18,12 +17,16 @@ import com.serenia.platform.iam.domain.model.valueobjects.SessionId;
 import com.serenia.platform.iam.domain.model.valueobjects.UserId;
 import com.serenia.platform.iam.domain.repositories.UserRepository;
 import com.serenia.platform.iam.domain.services.UserCommandService;
+import com.serenia.platform.shared.application.outboundservices.events.DomainEventPublisher;
+import com.serenia.platform.shared.application.outboundservices.storage.MediaStorageService;
 import com.serenia.platform.shared.application.result.ApplicationError;
 import com.serenia.platform.shared.application.result.Result;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.util.unit.DataSize;
 
 import java.time.DateTimeException;
 import java.time.ZoneId;
@@ -46,20 +49,28 @@ public class UserCommandServiceImpl implements UserCommandService {
     private static final String ACCOUNT_NOT_ACTIVE = "user.account.not.active";
     private static final String INCORRECT_PASSWORD = "user.password.incorrect";
     private static final String INVALID_TIME_ZONE = "user.time.zone.invalid";
+    private static final String UNSUPPORTED_IMAGE = "user.photo.file.unsupported";
+    private static final String FILE_TOO_LARGE = "validation.file.too.large";
 
     private final UserRepository userRepository;
     private final HashingService hashingService;
     private final DomainEventPublisher domainEventPublisher;
     private final TransactionTemplate transactionTemplate;
+    private final MediaStorageService mediaStorageService;
+    private final DataSize maxFileSize;
 
     public UserCommandServiceImpl(UserRepository userRepository,
                                   HashingService hashingService,
                                   DomainEventPublisher domainEventPublisher,
-                                  PlatformTransactionManager transactionManager) {
+                                  PlatformTransactionManager transactionManager,
+                                  MediaStorageService mediaStorageService,
+                                  @Value("${media.max-file-size}") DataSize maxFileSize) {
         this.userRepository = userRepository;
         this.hashingService = hashingService;
         this.domainEventPublisher = domainEventPublisher;
         this.transactionTemplate = new TransactionTemplate(transactionManager);
+        this.mediaStorageService = mediaStorageService;
+        this.maxFileSize = maxFileSize;
     }
 
     @Override
@@ -86,14 +97,30 @@ public class UserCommandServiceImpl implements UserCommandService {
                 toZoneId(command.timeZone())));
     }
 
+    /** Checks the image, stores it and replaces the photo, deleting the previously uploaded one. */
     @Override
-    public Result<User, ApplicationError> handle(UpdateUserPhotoCommand command) {
+    public Result<User, ApplicationError> handle(UploadUserPhotoCommand command) {
+        if (!command.photoFile().isSupportedImage())
+            return Result.failure(ApplicationError.unsupportedMediaType(UNSUPPORTED_IMAGE));
+        if (command.photoFile().size() > maxFileSize.toBytes())
+            return Result.failure(ApplicationError.payloadTooLarge(FILE_TOO_LARGE));
         var user = userRepository.findById(new UserId(command.userId()));
         if (user.isEmpty()) return userNotFound(command.userId());
         if (!user.get().isActive()) return accountNotActive();
 
-        user.get().updatePhoto(command.photoUrl());
-        return Result.success(saveAndPublish(user.get()));
+        var previousPhotoKey = user.get().getPhotoKey();
+        var photoKey = mediaStorageService.store(command.photoFile());
+        User saved;
+        try {
+            user.get().uploadPhoto(photoKey);
+            saved = saveAndPublish(user.get());
+        } catch (RuntimeException e) {
+            // The account could not be saved: the stored file would be orphaned
+            mediaStorageService.delete(photoKey);
+            throw e;
+        }
+        if (previousPhotoKey != null) mediaStorageService.delete(previousPhotoKey);
+        return Result.success(saved);
     }
 
     @Override

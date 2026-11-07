@@ -1,13 +1,13 @@
-package com.serenia.platform.socialcompanionship.infrastructure.storage.azure.services;
+package com.serenia.platform.shared.infrastructure.storage.azure.services;
 
 import com.azure.core.util.BinaryData;
 import com.azure.storage.blob.BlobContainerClient;
 import com.azure.storage.blob.BlobServiceClientBuilder;
 import com.azure.storage.blob.models.BlobHttpHeaders;
 import com.azure.storage.blob.options.BlobParallelUploadOptions;
-import com.serenia.platform.socialcompanionship.application.internal.outboundservices.storage.MediaStorageService;
-import com.serenia.platform.socialcompanionship.domain.model.valueobjects.MediaFile;
-import com.serenia.platform.socialcompanionship.domain.model.valueobjects.MediaKey;
+import com.serenia.platform.shared.application.outboundservices.storage.MediaStorageService;
+import com.serenia.platform.shared.domain.model.valueobjects.MediaFile;
+import com.serenia.platform.shared.domain.model.valueobjects.MediaKey;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
@@ -22,14 +22,14 @@ import java.util.UUID;
  * through the API, after the requester's access has been checked.</p>
  */
 @Service
-@ConditionalOnProperty(prefix = "social-companionship.media", name = "storage-provider", havingValue = "azure")
+@ConditionalOnProperty(prefix = "media", name = "storage-provider", havingValue = "azure")
 public class AzureBlobMediaStorageService implements MediaStorageService {
 
     private final BlobContainerClient containerClient;
 
     public AzureBlobMediaStorageService(
-            @Value("${social-companionship.media.azure.connection-string}") String connectionString,
-            @Value("${social-companionship.media.azure.container}") String containerName) {
+            @Value("${media.azure.connection-string}") String connectionString,
+            @Value("${media.azure.container}") String containerName) {
         this.containerClient = new BlobServiceClientBuilder()
                 .connectionString(connectionString)
                 .buildClient()

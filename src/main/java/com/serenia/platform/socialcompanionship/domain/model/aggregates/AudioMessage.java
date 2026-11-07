@@ -1,6 +1,7 @@
 package com.serenia.platform.socialcompanionship.domain.model.aggregates;
 
 import com.serenia.platform.shared.domain.model.aggregates.AbstractDomainAggregateRoot;
+import com.serenia.platform.shared.domain.model.valueobjects.MediaKey;
 import com.serenia.platform.socialcompanionship.domain.exceptions.MessageAlreadySharedException;
 import com.serenia.platform.socialcompanionship.domain.exceptions.MessageWithoutRecipientsException;
 import com.serenia.platform.socialcompanionship.domain.exceptions.NotMessageRecipientException;
@@ -12,7 +13,6 @@ import com.serenia.platform.socialcompanionship.domain.model.events.AudioMessage
 import com.serenia.platform.socialcompanionship.domain.model.valueobjects.AudioDuration;
 import com.serenia.platform.socialcompanionship.domain.model.valueobjects.AudioMessageId;
 import com.serenia.platform.socialcompanionship.domain.model.valueobjects.CareCircleId;
-import com.serenia.platform.socialcompanionship.domain.model.valueobjects.MediaKey;
 import com.serenia.platform.socialcompanionship.domain.model.valueobjects.MessageStatus;
 import com.serenia.platform.socialcompanionship.domain.model.valueobjects.OlderAdultId;
 import com.serenia.platform.socialcompanionship.domain.model.valueobjects.RelativeId;

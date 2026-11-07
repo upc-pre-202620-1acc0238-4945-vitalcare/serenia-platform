@@ -1,11 +1,11 @@
 package com.serenia.platform.socialcompanionship.infrastructure.persistence.jpa.mappers;
 
+import com.serenia.platform.shared.domain.model.valueobjects.MediaKey;
 import com.serenia.platform.socialcompanionship.domain.model.aggregates.AudioMessage;
 import com.serenia.platform.socialcompanionship.domain.model.entities.MessageReceipt;
 import com.serenia.platform.socialcompanionship.domain.model.valueobjects.AudioDuration;
 import com.serenia.platform.socialcompanionship.domain.model.valueobjects.AudioMessageId;
 import com.serenia.platform.socialcompanionship.domain.model.valueobjects.CareCircleId;
-import com.serenia.platform.socialcompanionship.domain.model.valueobjects.MediaKey;
 import com.serenia.platform.socialcompanionship.domain.model.valueobjects.MessageType;
 import com.serenia.platform.socialcompanionship.domain.model.valueobjects.OlderAdultId;
 import com.serenia.platform.socialcompanionship.domain.model.valueobjects.UserId;

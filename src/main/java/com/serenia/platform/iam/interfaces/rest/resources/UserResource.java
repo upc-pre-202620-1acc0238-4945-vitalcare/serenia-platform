@@ -25,7 +25,8 @@ public record UserResource(
         @Schema(description = "Birth date", example = "1948-05-12", nullable = true)
         LocalDate birthDate,
 
-        @Schema(description = "Profile photo URL", example = "https://example.com/photo.jpg", nullable = true)
+        @Schema(description = "Protected endpoint that serves the profile photo",
+                example = "/api/v1/users/3f2b8c9e-6a1d-4f0e-9b7a-2c5d8e1f4a6b/photo?v=1762430400000", nullable = true)
         String photoUrl,
 
         @Schema(description = "Interface language and region", example = "es-PE")

@@ -1,6 +1,7 @@
 package com.serenia.platform.socialcompanionship.domain.model.aggregates;
 
 import com.serenia.platform.shared.domain.model.aggregates.AbstractDomainAggregateRoot;
+import com.serenia.platform.shared.domain.model.valueobjects.MediaKey;
 import com.serenia.platform.socialcompanionship.domain.exceptions.MessageAlreadySharedException;
 import com.serenia.platform.socialcompanionship.domain.exceptions.NotMessageRecipientException;
 import com.serenia.platform.socialcompanionship.domain.model.entities.MessageReceipt;
@@ -9,7 +10,6 @@ import com.serenia.platform.socialcompanionship.domain.model.events.PhotoMessage
 import com.serenia.platform.socialcompanionship.domain.model.events.PhotoMessageShared;
 import com.serenia.platform.socialcompanionship.domain.model.events.PhotoMessageViewed;
 import com.serenia.platform.socialcompanionship.domain.model.valueobjects.CareCircleId;
-import com.serenia.platform.socialcompanionship.domain.model.valueobjects.MediaKey;
 import com.serenia.platform.socialcompanionship.domain.model.valueobjects.MessageStatus;
 import com.serenia.platform.socialcompanionship.domain.model.valueobjects.OlderAdultId;
 import com.serenia.platform.socialcompanionship.domain.model.valueobjects.PhotoMessageId;

@@ -1,9 +1,9 @@
-package com.serenia.platform.socialcompanionship.interfaces.rest.transform;
+package com.serenia.platform.shared.interfaces.rest.transform;
 
 import com.serenia.platform.shared.application.result.ApplicationError;
 import com.serenia.platform.shared.application.result.Result;
+import com.serenia.platform.shared.domain.model.valueobjects.MediaFile;
 import com.serenia.platform.shared.interfaces.rest.transform.ErrorResponseAssembler;
-import com.serenia.platform.socialcompanionship.domain.model.valueobjects.MediaFile;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpHeaders;

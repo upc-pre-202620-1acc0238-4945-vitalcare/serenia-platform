@@ -1,4 +1,4 @@
-package com.serenia.platform.socialcompanionship.domain.model.valueobjects;
+package com.serenia.platform.shared.domain.model.valueobjects;
 
 import java.util.Arrays;
 import java.util.Locale;

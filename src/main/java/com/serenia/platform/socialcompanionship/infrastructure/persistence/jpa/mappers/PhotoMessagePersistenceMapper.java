@@ -1,9 +1,9 @@
 package com.serenia.platform.socialcompanionship.infrastructure.persistence.jpa.mappers;
 
+import com.serenia.platform.shared.domain.model.valueobjects.MediaKey;
 import com.serenia.platform.socialcompanionship.domain.model.aggregates.PhotoMessage;
 import com.serenia.platform.socialcompanionship.domain.model.entities.MessageReceipt;
 import com.serenia.platform.socialcompanionship.domain.model.valueobjects.CareCircleId;
-import com.serenia.platform.socialcompanionship.domain.model.valueobjects.MediaKey;
 import com.serenia.platform.socialcompanionship.domain.model.valueobjects.MessageType;
 import com.serenia.platform.socialcompanionship.domain.model.valueobjects.PhotoMessageId;
 import com.serenia.platform.socialcompanionship.domain.model.valueobjects.RelativeId;
