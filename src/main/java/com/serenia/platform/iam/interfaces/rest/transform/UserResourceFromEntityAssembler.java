@@ -20,11 +20,11 @@ public class UserResourceFromEntityAssembler {
     }
 
     /**
-     * Returns the protected endpoint of an uploaded photo, versioned by the last update so a
-     * new photo is not served from a client cache, or the external URL otherwise.
+     * Returns the protected endpoint that serves the photo, versioned by the last update so a
+     * new photo is not served from a client cache, or null when the account has no photo.
      */
     private static String photoUrlOf(User user) {
-        if (!user.hasUploadedPhoto()) return user.getPhotoUrl();
+        if (!user.hasUploadedPhoto()) return null;
         return PHOTO_ENDPOINT.formatted(user.getId().value(), user.getUpdatedAt().toEpochMilli());
     }
 

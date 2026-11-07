@@ -53,7 +53,6 @@ public class User extends AbstractDomainAggregateRoot<User> {
     private PersonName fullName;
     private PhoneNumber phoneNumber;
     private LocalDate birthDate;
-    private String photoUrl;
     private MediaKey photoKey;
     private LocaleCode locale;
     private ZoneId timeZone;
@@ -66,7 +65,7 @@ public class User extends AbstractDomainAggregateRoot<User> {
      * from stored data. It validates the invariants but registers no domain events.
      */
     public User(UserId id, EmailAddress email, PasswordHash passwordHash, UserRole role,
-                PersonName fullName, PhoneNumber phoneNumber, LocalDate birthDate, String photoUrl,
+                PersonName fullName, PhoneNumber phoneNumber, LocalDate birthDate,
                 MediaKey photoKey, LocaleCode locale, ZoneId timeZone, AccountStatus status,
                 Instant createdAt, Instant updatedAt) {
         this.id = requireNonNull(id, ID_NULL_MESSAGE_KEY);
@@ -78,7 +77,6 @@ public class User extends AbstractDomainAggregateRoot<User> {
         this.locale = requireNonNull(locale, LOCALE_NULL_MESSAGE_KEY);
         this.timeZone = requireNonNull(timeZone, TIME_ZONE_NULL_MESSAGE_KEY);
         this.birthDate = validateBirthDate(birthDate, this.timeZone);
-        this.photoUrl = photoUrl;
         this.photoKey = photoKey;
         this.status = requireNonNull(status, STATUS_NULL_MESSAGE_KEY);
         this.createdAt = requireNonNull(createdAt, TIMESTAMPS_NULL_MESSAGE_KEY);
@@ -124,30 +122,17 @@ public class User extends AbstractDomainAggregateRoot<User> {
     }
 
     /**
-     * Replaces the profile photo with an external URL, dropping any uploaded photo, and
-     * registers {@link UserPhotoUpdated}.
-     */
-    public void updatePhoto(String photoUrl) {
-        ensureActive();
-        this.photoUrl = photoUrl;
-        this.photoKey = null;
-        this.updatedAt = Instant.now();
-        registerDomainEvent(new UserPhotoUpdated(id.value(), updatedAt));
-    }
-
-    /**
-     * Replaces the profile photo with an uploaded image kept in the media storage, and
-     * registers {@link UserPhotoUpdated}.
+     * Replaces the profile photo with an image kept in the media storage, and registers
+     * {@link UserPhotoUpdated}.
      */
     public void uploadPhoto(MediaKey photoKey) {
         ensureActive();
         this.photoKey = requireNonNull(photoKey, PHOTO_KEY_NULL_MESSAGE_KEY);
-        this.photoUrl = null;
         this.updatedAt = Instant.now();
         registerDomainEvent(new UserPhotoUpdated(id.value(), updatedAt));
     }
 
-    /** Indicates whether the profile photo is an image uploaded to the media storage. */
+    /** Indicates whether the account has a profile photo. */
     public boolean hasUploadedPhoto() {
         return photoKey != null;
     }
@@ -181,7 +166,7 @@ public class User extends AbstractDomainAggregateRoot<User> {
                                  PhoneNumber phoneNumber, LocalDate birthDate, LocaleCode locale, ZoneId timeZone) {
         var now = Instant.now();
         return new User(UserId.generate(), email, passwordHash, role, fullName, phoneNumber, birthDate,
-                null, null, locale, timeZone, AccountStatus.ACTIVE, now, now);
+                null, locale, timeZone, AccountStatus.ACTIVE, now, now);
     }
 
     /** Prevents changes on a suspended or deleted account. */

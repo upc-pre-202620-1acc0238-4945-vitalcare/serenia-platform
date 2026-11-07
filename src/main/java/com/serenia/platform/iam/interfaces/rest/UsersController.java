@@ -8,14 +8,12 @@ import com.serenia.platform.iam.domain.services.UserQueryService;
 import com.serenia.platform.iam.interfaces.rest.resources.ChangePasswordResource;
 import com.serenia.platform.iam.interfaces.rest.resources.RegisterUserResource;
 import com.serenia.platform.iam.interfaces.rest.resources.UpdateProfileDataResource;
-import com.serenia.platform.iam.interfaces.rest.resources.UpdateUserPhotoResource;
 import com.serenia.platform.iam.interfaces.rest.resources.UploadUserPhotoResource;
 import com.serenia.platform.iam.interfaces.rest.resources.UserResource;
 import com.serenia.platform.iam.interfaces.rest.transform.ChangePasswordCommandFromResourceAssembler;
 import com.serenia.platform.iam.interfaces.rest.transform.RegisterDistantRelativeCommandFromResourceAssembler;
 import com.serenia.platform.iam.interfaces.rest.transform.RegisterOlderAdultCommandFromResourceAssembler;
 import com.serenia.platform.iam.interfaces.rest.transform.UpdateProfileDataCommandFromResourceAssembler;
-import com.serenia.platform.iam.interfaces.rest.transform.UpdateUserPhotoCommandFromResourceAssembler;
 import com.serenia.platform.iam.interfaces.rest.transform.UploadUserPhotoCommandFromResourceAssembler;
 import com.serenia.platform.iam.interfaces.rest.transform.UserResourceFromEntityAssembler;
 import com.serenia.platform.shared.application.result.ApplicationError;
@@ -121,29 +119,9 @@ public class UsersController {
                 HttpStatus.OK);
     }
 
-    @PutMapping(value = "/{userId}/photo", consumes = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Update user photo", description = "Replaces the profile photo of the authenticated user with an external URL.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Photo updated successfully.",
-                    content = @Content(schema = @Schema(implementation = UserResource.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid input data."),
-            @ApiResponse(responseCode = "403", description = "The user is not the account owner."),
-            @ApiResponse(responseCode = "404", description = "User not found.")})
-    public ResponseEntity<?> updateUserPhoto(
-            @PathVariable UUID userId,
-            @Valid @RequestBody UpdateUserPhotoResource resource,
-            @Parameter(hidden = true) @AuthenticationPrincipal AuthenticatedUserPrincipal principal) {
-        if (!isAccountOwner(principal, userId)) return notAccountOwner();
-        var command = UpdateUserPhotoCommandFromResourceAssembler.toCommandFromResource(userId, resource);
-        return ResponseEntityAssembler.toResponseEntityFromResult(
-                userCommandService.handle(command),
-                UserResourceFromEntityAssembler::toResourceFromEntity,
-                HttpStatus.OK);
-    }
-
     @PutMapping(value = "/{userId}/photo", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "Upload user photo",
-            description = "Replaces the profile photo of the authenticated user with an uploaded JPEG or PNG image.")
+            description = "Replaces the profile photo of the authenticated user with a JPEG or PNG image.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Photo uploaded successfully.",
                     content = @Content(schema = @Schema(implementation = UserResource.class))),

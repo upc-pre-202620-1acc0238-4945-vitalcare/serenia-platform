@@ -57,9 +57,6 @@ public class UserPersistenceEntity {
     @Column(name = "birth_date")
     private LocalDate birthDate;
 
-    @Column(name = "photo_url", columnDefinition = "TEXT")
-    private String photoUrl;
-
     @Column(name = "photo_key", length = 500)
     private String photoKey;
 

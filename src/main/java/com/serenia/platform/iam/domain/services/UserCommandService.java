@@ -5,7 +5,6 @@ import com.serenia.platform.iam.domain.model.commands.ChangePasswordCommand;
 import com.serenia.platform.iam.domain.model.commands.RegisterDistantRelativeCommand;
 import com.serenia.platform.iam.domain.model.commands.RegisterOlderAdultCommand;
 import com.serenia.platform.iam.domain.model.commands.UpdateProfileDataCommand;
-import com.serenia.platform.iam.domain.model.commands.UpdateUserPhotoCommand;
 import com.serenia.platform.iam.domain.model.commands.UploadUserPhotoCommand;
 import com.serenia.platform.shared.application.result.ApplicationError;
 import com.serenia.platform.shared.application.result.Result;
@@ -23,9 +22,6 @@ public interface UserCommandService {
 
     /** Registers an account with the distant relative role. */
     Result<User, ApplicationError> handle(RegisterDistantRelativeCommand command);
-
-    /** Replaces the profile photo of an account. */
-    Result<User, ApplicationError> handle(UpdateUserPhotoCommand command);
 
     /** Replaces the profile photo of an account with an uploaded image. */
     Result<User, ApplicationError> handle(UploadUserPhotoCommand command);

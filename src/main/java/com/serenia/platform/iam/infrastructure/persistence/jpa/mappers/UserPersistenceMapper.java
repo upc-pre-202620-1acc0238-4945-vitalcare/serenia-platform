@@ -31,7 +31,6 @@ public final class UserPersistenceMapper {
                 new PersonName(entity.getFullName()),
                 PhoneNumber.fromNullable(entity.getPhoneNumber()),
                 entity.getBirthDate(),
-                entity.getPhotoUrl(),
                 entity.getPhotoKey() == null ? null : new MediaKey(entity.getPhotoKey()),
                 new LocaleCode(entity.getLocale()),
                 ZoneId.of(entity.getTimeZone()),
@@ -50,7 +49,6 @@ public final class UserPersistenceMapper {
         entity.setFullName(user.getFullName().value());
         entity.setPhoneNumber(user.getPhoneNumber() == null ? null : user.getPhoneNumber().value());
         entity.setBirthDate(user.getBirthDate());
-        entity.setPhotoUrl(user.getPhotoUrl());
         entity.setPhotoKey(user.getPhotoKey() == null ? null : user.getPhotoKey().value());
         entity.setLocale(user.getLocale().value());
         entity.setTimeZone(user.getTimeZone().getId());

@@ -7,7 +7,6 @@ import com.serenia.platform.iam.domain.model.commands.ChangePasswordCommand;
 import com.serenia.platform.iam.domain.model.commands.RegisterDistantRelativeCommand;
 import com.serenia.platform.iam.domain.model.commands.RegisterOlderAdultCommand;
 import com.serenia.platform.iam.domain.model.commands.UpdateProfileDataCommand;
-import com.serenia.platform.iam.domain.model.commands.UpdateUserPhotoCommand;
 import com.serenia.platform.iam.domain.model.commands.UploadUserPhotoCommand;
 import com.serenia.platform.iam.domain.model.valueobjects.EmailAddress;
 import com.serenia.platform.iam.domain.model.valueobjects.LocaleCode;
@@ -96,19 +95,6 @@ public class UserCommandServiceImpl implements UserCommandService {
                 command.birthDate(),
                 new LocaleCode(command.locale()),
                 toZoneId(command.timeZone())));
-    }
-
-    @Override
-    public Result<User, ApplicationError> handle(UpdateUserPhotoCommand command) {
-        var user = userRepository.findById(new UserId(command.userId()));
-        if (user.isEmpty()) return userNotFound(command.userId());
-        if (!user.get().isActive()) return accountNotActive();
-
-        var previousPhotoKey = user.get().getPhotoKey();
-        user.get().updatePhoto(command.photoUrl());
-        var saved = saveAndPublish(user.get());
-        if (previousPhotoKey != null) mediaStorageService.delete(previousPhotoKey);
-        return Result.success(saved);
     }
 
     /** Checks the image, stores it and replaces the photo, deleting the previously uploaded one. */
