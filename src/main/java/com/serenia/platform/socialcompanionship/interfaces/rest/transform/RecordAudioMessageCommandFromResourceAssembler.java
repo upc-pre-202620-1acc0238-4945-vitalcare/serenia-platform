@@ -1,5 +1,6 @@
 package com.serenia.platform.socialcompanionship.interfaces.rest.transform;
 
+import com.serenia.platform.shared.interfaces.rest.transform.MediaFileFromMultipartFileAssembler;
 import com.serenia.platform.socialcompanionship.domain.model.commands.RecordAudioMessageCommand;
 import com.serenia.platform.socialcompanionship.interfaces.rest.resources.RecordAudioMessageResource;
 

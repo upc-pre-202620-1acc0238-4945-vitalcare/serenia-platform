@@ -1,8 +1,7 @@
-package com.serenia.platform.socialcompanionship.application.internal.outboundservices.storage;
+package com.serenia.platform.shared.application.outboundservices.storage;
 
-import com.serenia.platform.socialcompanionship.domain.model.valueobjects.MediaFile;
-import com.serenia.platform.socialcompanionship.domain.model.valueobjects.MediaKey;
-
+import com.serenia.platform.shared.domain.model.valueobjects.MediaFile;
+import com.serenia.platform.shared.domain.model.valueobjects.MediaKey;
 import java.util.Optional;
 
 /**

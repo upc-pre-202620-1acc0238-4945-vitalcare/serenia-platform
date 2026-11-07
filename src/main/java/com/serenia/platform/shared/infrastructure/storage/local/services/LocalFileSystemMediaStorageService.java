@@ -1,8 +1,8 @@
-package com.serenia.platform.socialcompanionship.infrastructure.storage.local.services;
+package com.serenia.platform.shared.infrastructure.storage.local.services;
 
-import com.serenia.platform.socialcompanionship.application.internal.outboundservices.storage.MediaStorageService;
-import com.serenia.platform.socialcompanionship.domain.model.valueobjects.MediaFile;
-import com.serenia.platform.socialcompanionship.domain.model.valueobjects.MediaKey;
+import com.serenia.platform.shared.application.outboundservices.storage.MediaStorageService;
+import com.serenia.platform.shared.domain.model.valueobjects.MediaFile;
+import com.serenia.platform.shared.domain.model.valueobjects.MediaKey;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
@@ -19,7 +19,7 @@ import java.util.UUID;
  * platform runs without an Azure account; the files are also only handed out through the API.
  */
 @Service
-@ConditionalOnProperty(prefix = "social-companionship.media", name = "storage-provider", havingValue = "local",
+@ConditionalOnProperty(prefix = "media", name = "storage-provider", havingValue = "local",
         matchIfMissing = true)
 public class LocalFileSystemMediaStorageService implements MediaStorageService {
 
@@ -27,7 +27,7 @@ public class LocalFileSystemMediaStorageService implements MediaStorageService {
 
     private final Path directory;
 
-    public LocalFileSystemMediaStorageService(@Value("${social-companionship.media.local-directory}") String directory) {
+    public LocalFileSystemMediaStorageService(@Value("${media.local-directory}") String directory) {
         this.directory = Path.of(directory).toAbsolutePath().normalize();
         try {
             Files.createDirectories(this.directory);

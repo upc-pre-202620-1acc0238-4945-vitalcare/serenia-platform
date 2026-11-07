@@ -1,6 +1,7 @@
 package com.serenia.platform.socialcompanionship.interfaces.rest;
 
 import com.serenia.platform.shared.infrastructure.security.AuthenticatedUserPrincipal;
+import com.serenia.platform.shared.interfaces.rest.transform.MediaResponseAssembler;
 import com.serenia.platform.shared.interfaces.rest.transform.ResponseEntityAssembler;
 import com.serenia.platform.socialcompanionship.domain.model.commands.DiscardAudioMessageCommand;
 import com.serenia.platform.socialcompanionship.domain.model.commands.PlayAudioMessageCommand;
@@ -12,7 +13,6 @@ import com.serenia.platform.socialcompanionship.domain.services.AudioMessageQuer
 import com.serenia.platform.socialcompanionship.interfaces.rest.resources.AudioMessageResource;
 import com.serenia.platform.socialcompanionship.interfaces.rest.resources.RecordAudioMessageResource;
 import com.serenia.platform.socialcompanionship.interfaces.rest.transform.AudioMessageResourceFromEntityAssembler;
-import com.serenia.platform.socialcompanionship.interfaces.rest.transform.MediaResponseAssembler;
 import com.serenia.platform.socialcompanionship.interfaces.rest.transform.RecordAudioMessageCommandFromResourceAssembler;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

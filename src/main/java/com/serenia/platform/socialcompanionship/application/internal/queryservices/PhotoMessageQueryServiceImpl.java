@@ -1,14 +1,14 @@
 package com.serenia.platform.socialcompanionship.application.internal.queryservices;
 
+import com.serenia.platform.shared.application.outboundservices.storage.MediaStorageService;
 import com.serenia.platform.shared.application.result.ApplicationError;
 import com.serenia.platform.shared.application.result.Result;
+import com.serenia.platform.shared.domain.model.valueobjects.MediaFile;
 import com.serenia.platform.socialcompanionship.application.internal.outboundservices.acl.ExternalCareCircleService;
-import com.serenia.platform.socialcompanionship.application.internal.outboundservices.storage.MediaStorageService;
 import com.serenia.platform.socialcompanionship.domain.model.aggregates.PhotoMessage;
 import com.serenia.platform.socialcompanionship.domain.model.queries.GetPhotoMessageMediaQuery;
 import com.serenia.platform.socialcompanionship.domain.model.queries.GetSharedPhotoMessagesByCareCircleIdQuery;
 import com.serenia.platform.socialcompanionship.domain.model.valueobjects.CareCircleId;
-import com.serenia.platform.socialcompanionship.domain.model.valueobjects.MediaFile;
 import com.serenia.platform.socialcompanionship.domain.model.valueobjects.PhotoMessageId;
 import com.serenia.platform.socialcompanionship.domain.repositories.PhotoMessageRepository;
 import com.serenia.platform.socialcompanionship.domain.services.PhotoMessageQueryService;
