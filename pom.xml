@@ -12,7 +12,7 @@
     <artifactId>platform</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>serenia-platform</name>
-    <description>serenia-platform</description>
+    <description>RESTful API of Serenia, a platform that supports the daily wellbeing of older adults and keeps them connected with their distant relatives.</description>
     <url/>
     <licenses>
         <license/>
