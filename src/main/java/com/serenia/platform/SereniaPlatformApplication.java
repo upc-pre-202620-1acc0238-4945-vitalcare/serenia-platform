@@ -4,6 +4,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
+import java.util.TimeZone;
+
 /**
  * Bootstrap class for the Learning Center Platform application.
  *
@@ -14,6 +16,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 public class SereniaPlatformApplication {
 
     public static void main(String[] args) {
+        // Instants and times are stored in UTC, so the JVM must not depend on the zone of the machine
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
         SpringApplication.run(SereniaPlatformApplication.class, args);
     }
 }
