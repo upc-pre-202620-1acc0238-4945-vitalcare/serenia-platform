@@ -7,6 +7,7 @@ import com.serenia.platform.dailycheckin.infrastructure.persistence.jpa.entities
 import com.serenia.platform.dailycheckin.infrastructure.persistence.jpa.mappers.CheckInPreferencesPersistenceMapper;
 import com.serenia.platform.dailycheckin.infrastructure.persistence.jpa.repositories.CheckInPreferencesJpaRepository;
 import com.serenia.platform.dailycheckin.infrastructure.persistence.jpa.repositories.QuestionPauseJpaRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +22,7 @@ import java.util.Optional;
  * the older adult resumes the questions the same day; older pauses are kept as history.</p>
  */
 @Repository
+@Slf4j
 public class CheckInPreferencesRepositoryImpl implements CheckInPreferencesRepository {
 
     private final CheckInPreferencesJpaRepository checkInPreferencesJpaRepository;
@@ -59,9 +61,24 @@ public class CheckInPreferencesRepositoryImpl implements CheckInPreferencesRepos
         return checkInPreferencesJpaRepository.findByOlderAdultId(olderAdultId.value()).map(this::withLatestPause);
     }
 
+    /**
+     * Finds the preferences of every older adult. A row that cannot be converted to the domain, such as
+     * a stored time out of the allowed range, is logged and skipped so that it does not hide the others.
+     */
     @Override
     public List<CheckInPreferences> findAll() {
-        return checkInPreferencesJpaRepository.findAll().stream().map(this::withLatestPause).toList();
+        return checkInPreferencesJpaRepository.findAll().stream()
+                .flatMap(entity -> toDomainIfValid(entity).stream())
+                .toList();
+    }
+
+    private Optional<CheckInPreferences> toDomainIfValid(CheckInPreferencesPersistenceEntity entity) {
+        try {
+            return Optional.of(withLatestPause(entity));
+        } catch (RuntimeException e) {
+            log.warn("Skipping the check-in preferences of older adult {}: {}", entity.getOlderAdultId(), e.getMessage());
+            return Optional.empty();
+        }
     }
 
     private CheckInPreferences withLatestPause(CheckInPreferencesPersistenceEntity entity) {
