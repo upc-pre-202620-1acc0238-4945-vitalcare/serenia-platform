@@ -72,12 +72,9 @@ public class OpenApiConfiguration {
                 .info(new Info()
                         .title(this.applicationName)
                         .description(this.applicationDescription + "\n" + API_GUIDE)
-                        .version(this.applicationVersion)
-                        .contact(new Contact()
-                                .name("VitalCare team")
-                                .url(REPOSITORY_URL)))
+                        .version(this.applicationVersion))
                 .externalDocs(new ExternalDocumentation()
-                        .description("Serenia Platform repository and README")
+                        .description("Serenia Platform repository and README (VitalCare team)")
                         .url(REPOSITORY_URL));
 
         // Use a relative server URL so Swagger UI always targets the same origin
