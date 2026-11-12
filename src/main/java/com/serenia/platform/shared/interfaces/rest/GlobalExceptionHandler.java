@@ -6,8 +6,11 @@ import org.jspecify.annotations.NullMarked;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
+import org.springframework.web.bind.UnsatisfiedServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 
@@ -90,6 +93,45 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> handleMissingServletRequestPart(MissingServletRequestPartException ex) {
         var applicationError = ApplicationError.validationError(ex.getRequestPartName(),
                 resolveMessageOrDefault("validation.request.part.missing", "Required request part is missing"));
+        return ErrorResponseAssembler.toErrorResponseFromApplicationError(applicationError);
+    }
+
+    /**
+     * Handles requests that miss a required query parameter.
+     *
+     * @param ex the missing parameter exception
+     * @return error response with BAD_REQUEST status
+     */
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity<?> handleMissingServletRequestParameter(MissingServletRequestParameterException ex) {
+        var applicationError = ApplicationError.validationError(ex.getParameterName(),
+                resolveMessageOrDefault("validation.request.parameter.missing", "Required request parameter is missing"));
+        return ErrorResponseAssembler.toErrorResponseFromApplicationError(applicationError);
+    }
+
+    /**
+     * Handles requests whose query parameters do not satisfy the ones the endpoint requires together.
+     *
+     * @param ex the unsatisfied parameter conditions exception
+     * @return error response with BAD_REQUEST status
+     */
+    @ExceptionHandler(UnsatisfiedServletRequestParameterException.class)
+    public ResponseEntity<?> handleUnsatisfiedServletRequestParameter(UnsatisfiedServletRequestParameterException ex) {
+        var applicationError = ApplicationError.validationError("request-parameters",
+                resolveMessageOrDefault("validation.request.parameter.missing", "Required request parameter is missing"));
+        return ErrorResponseAssembler.toErrorResponseFromApplicationError(applicationError);
+    }
+
+    /**
+     * Handles parameters or path variables that cannot be converted to the expected type, such as a malformed UUID or date.
+     *
+     * @param ex the type mismatch exception
+     * @return error response with BAD_REQUEST status
+     */
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<?> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException ex) {
+        var applicationError = ApplicationError.validationError(ex.getName(),
+                resolveMessageOrDefault("validation.request.parameter.invalid", "Request parameter has an invalid value"));
         return ErrorResponseAssembler.toErrorResponseFromApplicationError(applicationError);
     }
 

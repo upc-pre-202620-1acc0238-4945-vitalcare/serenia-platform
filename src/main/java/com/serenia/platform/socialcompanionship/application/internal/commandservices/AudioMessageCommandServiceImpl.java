@@ -1,11 +1,11 @@
 package com.serenia.platform.socialcompanionship.application.internal.commandservices;
 
 import com.serenia.platform.shared.application.outboundservices.events.DomainEventPublisher;
+import com.serenia.platform.shared.application.outboundservices.storage.MediaStorageService;
 import com.serenia.platform.shared.application.result.ApplicationError;
 import com.serenia.platform.shared.application.result.Result;
 import com.serenia.platform.socialcompanionship.application.internal.errors.SocialCompanionshipErrorMapper;
 import com.serenia.platform.socialcompanionship.application.internal.outboundservices.acl.ExternalCareCircleService;
-import com.serenia.platform.socialcompanionship.application.internal.outboundservices.storage.MediaStorageService;
 import com.serenia.platform.socialcompanionship.domain.exceptions.SocialCompanionshipDomainException;
 import com.serenia.platform.socialcompanionship.domain.model.aggregates.AudioMessage;
 import com.serenia.platform.socialcompanionship.domain.model.commands.DiscardAudioMessageCommand;
@@ -51,7 +51,7 @@ public class AudioMessageCommandServiceImpl implements AudioMessageCommandServic
                                           MediaStorageService mediaStorageService,
                                           ExternalCareCircleService externalCareCircleService,
                                           DomainEventPublisher domainEventPublisher,
-                                          @Value("${social-companionship.media.max-file-size}") DataSize maxFileSize) {
+                                          @Value("${media.max-file-size}") DataSize maxFileSize) {
         this.audioMessageRepository = audioMessageRepository;
         this.mediaStorageService = mediaStorageService;
         this.externalCareCircleService = externalCareCircleService;

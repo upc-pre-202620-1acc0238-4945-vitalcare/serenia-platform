@@ -1,6 +1,7 @@
 package com.serenia.platform.socialcompanionship.interfaces.rest;
 
 import com.serenia.platform.shared.infrastructure.security.AuthenticatedUserPrincipal;
+import com.serenia.platform.shared.interfaces.rest.transform.MediaResponseAssembler;
 import com.serenia.platform.shared.interfaces.rest.transform.ResponseEntityAssembler;
 import com.serenia.platform.socialcompanionship.domain.model.commands.DiscardPhotoMessageCommand;
 import com.serenia.platform.socialcompanionship.domain.model.commands.SharePhotoMessageCommand;
@@ -11,7 +12,6 @@ import com.serenia.platform.socialcompanionship.domain.services.PhotoMessageComm
 import com.serenia.platform.socialcompanionship.domain.services.PhotoMessageQueryService;
 import com.serenia.platform.socialcompanionship.interfaces.rest.resources.PhotoMessageResource;
 import com.serenia.platform.socialcompanionship.interfaces.rest.resources.SelectPhotoMessageResource;
-import com.serenia.platform.socialcompanionship.interfaces.rest.transform.MediaResponseAssembler;
 import com.serenia.platform.socialcompanionship.interfaces.rest.transform.PhotoMessageResourceFromEntityAssembler;
 import com.serenia.platform.socialcompanionship.interfaces.rest.transform.SelectPhotoMessageCommandFromResourceAssembler;
 import io.swagger.v3.oas.annotations.Operation;

@@ -1,6 +1,6 @@
 package com.serenia.platform.socialcompanionship.domain.model.commands;
 
-import com.serenia.platform.socialcompanionship.domain.model.valueobjects.MediaFile;
+import com.serenia.platform.shared.domain.model.valueobjects.MediaFile;
 import java.util.UUID;
 
 /**

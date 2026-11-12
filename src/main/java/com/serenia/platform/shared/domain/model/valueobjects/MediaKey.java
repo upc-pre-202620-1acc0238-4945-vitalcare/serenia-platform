@@ -1,4 +1,4 @@
-package com.serenia.platform.socialcompanionship.domain.model.valueobjects;
+package com.serenia.platform.shared.domain.model.valueobjects;
 
 /**
  * Key of a file in the media storage; it is not a public URL.

@@ -1,6 +1,6 @@
-package com.serenia.platform.socialcompanionship.interfaces.rest.transform;
+package com.serenia.platform.shared.interfaces.rest.transform;
 
-import com.serenia.platform.socialcompanionship.domain.model.valueobjects.MediaFile;
+import com.serenia.platform.shared.domain.model.valueobjects.MediaFile;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
